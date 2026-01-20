@@ -1,34 +1,53 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
+import { exec } from "child_process";
 
 const app = express();
 
-// ✅ Permitir peticiones desde tu frontend
-app.use(cors({
-  origin: "http://localhost:3000", // o "*" si quieres permitir todo
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"],
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
 app.use(express.json());
 
-app.post("/api/chat", async (req, res) => {
+app.post("/api/query", async (req, res) => {
   const { pregunta } = req.body;
 
-  try {
-    const respuesta = await fetch("http://192.168.31.80:5000/rag", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pregunta }),
-    });
-
-    const data = await respuesta.json();
-    res.json(data);
-  } catch (error) {
-    console.error("Error al consultar el RAG:", error);
-    res.status(500).json({ error: "Error en el servidor Express" });
+  if (!pregunta) {
+    return res.status(400).json({ error: "Pregunta vacía" });
   }
+
+  // Ajusta este path a tu proyecto GraphRAG
+  const CONDA = "/opt/miniconda3/bin/conda";
+  const GRAPH_RAG_PATH = "/home/mikhail/Laad/RAG/Microsoft_GraphRag_GPT-5-nano";
+
+  const command = `
+  cd ${GRAPH_RAG_PATH} &&
+  ${CONDA} run -n IA graphrag query --method local -q "${pregunta.replace(/"/g, '\\"')}"
+`;
+
+  exec(`bash -lc ${command}`, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Error GraphRAG:", error);
+      return res.status(500).json({ error: "Error ejecutando GraphRAG" });
+    }
+
+    if (stderr) {
+      console.warn("GraphRAG stderr:", stderr);
+    }
+
+    res.json({
+      role: "assistant",
+      content: stdout.trim(),
+      sources: [], // luego puedes parsear fuentes si quieres
+    });
+  });
 });
 
-app.listen(4000, () => console.log("✅ Backend conectado en puerto 4000"));
+app.listen(4000, () => {
+  console.log("✅ Backend GraphRAG escuchando en puerto 4000");
+});

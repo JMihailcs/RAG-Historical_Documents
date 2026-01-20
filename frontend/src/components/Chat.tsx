@@ -16,87 +16,6 @@ Puedo ayudarte a explorar *documentos coloniales*, identificar personajes o anal
 `,
       sources: [],
     },
-    {
-      role: "user",
-      content:
-        "Estoy investigando sobre el Ayllu Tinta a inicios del siglo XIX, ¿quién era su cacique en 1806?",
-      sources: [],
-    },
-    {
-      role: "assistant",
-      content: `
-### 🧭 Informe histórico: Cacique del Ayllu Tinta (1806)
-
-Según los registros del **expediente Nº 49**, fechado en **agosto de 1806**, el **cacique principal del Ayllu Tinta** era **Don Andrés Chuquitapa**.
-
----
-
-#### 🧩 Interpretación
-El documento confirma su autoridad y muestra conflictos locales entre caciques y tributarios, algo común tras las **reformas borbónicas**.
-`,
-      sources: [
-        {
-          title: "Página 1 - Inicio del expediente",
-          url: "expediente_49#1",
-          snippet:
-            "Expediente seguido por el indio Manuel Mancachoque sobre los maltratos recibidos del cacique del Ayllu Tinta D. Andrés Chuquitapa...",
-          content: `
-              Agosto 26 de 1806 
-
-              Expediente seguido por el indio Manuel
-              Mancachoque sobre los maltratos y tropelías que
-              le ha inferido el cacique del Ayllu Tinta D.
-              Andrés Chuquitapa; y se le borre de la
-              matrícula en que lo han numerado en clase de
-              tributarios. \n
-              Instancia 
-              Real Hacienda
-                  `,
-          highlight: "cacique del Ayllu Tinta D. Andrés Chuquitapa",
-        },
-      ],
-    },
-    {
-      role: "user",
-      content:
-        "¿Y qué tipo de abusos se mencionan contra este cacique en el expediente?",
-      sources: [],
-    },
-    {
-      role: "assistant",
-      content: `
-### ⚖️ Denuncias registradas contra el cacique Andrés Chuquitapa
-
-El expediente describe varios **abusos y excesos de autoridad** cometidos por el cacique contra los tributarios del Ayllu Tinta.
-
----
-
-#### 📌 Principales denuncias
-1. **Apropiación de tierras:** se acusa al cacique de quitar chacras y redistribuirlas entre sus allegados.  
-2. **Trabajo forzoso:** obligaba a los indios a realizar faenas sin pago ni permiso.  
-3. **Violencia física y castigos:** algunos testigos afirman haber presenciado maltratos personales.
-
----
-
-Estas acusaciones reflejan tensiones típicas de la transición entre el sistema de **repartimientos coloniales** y las **reformas republicanas posteriores**.  
-El expediente es un testimonio valioso del **abuso de poder local** y la **resistencia indígena**.
-`,
-      sources: [
-        {
-          title: "Página 3 - Declaración del sargento Isidro Cano",
-          url: "expediente_49#3",
-          snippet:
-            "A los indios perjudica quitando sus chacras o tierras y los arrea con faenas...",
-          content: `              Declaración del sargento Isidro Cano
-              \n
-              A los indios perjudica quitando sus chacras o tierras y
-              los arrea con faenas, sin darles permiso ni paga alguna.
-              \n
-              `,
-          highlight: "quitando sus chacras o tierras y los arrea con faenas",
-        },
-      ],
-    },
   ]);
 
   const chatRef = useRef<HTMLDivElement>(null);
@@ -107,12 +26,51 @@ El expediente es un testimonio valioso del **abuso de poder local** y la **resis
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
+
+    // 1. Mostrar mensaje del usuario inmediatamente
     setMessages((prev) => [
       ...prev,
       { role: "user", content: text, sources: [] },
     ]);
-  };
 
+    try {
+      // 2. Llamada al backend
+      const response = await fetch("http://localhost:4000/api/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pregunta: text }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error en el backend");
+      }
+
+      const data = await response.json();
+
+      // 3. Mostrar respuesta del asistente
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.content,
+          sources: data.sources || [],
+        },
+      ]);
+    } catch {
+      // 4. Manejo de error visible en el chat
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "❌ Ocurrió un error al consultar el sistema. Intenta nuevamente.",
+          sources: [],
+        },
+      ]);
+    }
+  };
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0f1011] to-[#1a1b1d]">
       {/* Área de mensajes */}
