@@ -1,0 +1,13 @@
+2025-12-18 23:24:49.0647 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2025-12-24 17:00:17.0248 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2025-12-24 17:53:57.0987 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2025-12-24 17:55:10.0798 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-06 11:02:49.0159 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-06 11:03:47.0046 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-06 11:06:54.0882 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-06 11:10:59.0734 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-06 11:15:53.0883 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-20 23:59:32.0576 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-28 21:49:40.0748 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-28 21:55:26.0451 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
+2026-01-28 22:00:14.0455 - WARNING - graphrag.query.structured_search.local_search.mixed_context - Reached token limit - reverting to previous context state
