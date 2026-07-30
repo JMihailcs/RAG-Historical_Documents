@@ -1,0 +1,151 @@
+
+-Goal-
+Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: One of the following types: [person, location, legal_document, position, event, community, indigenous_group, administrative_unit, legal_procedure]
+- entity_description: Comprehensive description of the entity's attributes and activities
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
+
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: an integer score between 1 to 10, indicating strength of the relationship between the source entity and target entity
+Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tuple_delimiter}<target_entity>{tuple_delimiter}<relationship_description>{tuple_delimiter}<relationship_strength>)
+
+3. Return output in spanish as a single list of all the entities and relationships identified in steps 1 and 2. Use **{record_delimiter}** as the list delimiter.
+
+4. If you have to translate into spanish, just translate the descriptions, nothing else!
+
+5. When finished, output {completion_delimiter}.
+
+-Examples-
+######################
+
+Example 1:
+
+entity_types: [person, location, legal_document, position, event, community, indigenous_group, administrative_unit, legal_procedure]
+text:
+ y siendo necesario lo reproduce, y que esta es la verdad su cargo del juramento hecho en que se afirmó y ratifica, siéndole leída de principio y lo firmó con su Merced protector e intérpretes de que doy fe.
+Firma Galeano
+Firma Don Valencia
+Firma Marcos Salcedo
+Firma Juan Clemente Jordán
+Firma Manuel Huancachoque
+
+Cuzco
+
+#
+
+Agosto 27 de 1806
+
+Vistos, con lo que resulta de la diligencia antecede y en conformidad a lo expuesto y pedido por el Señor Fiscal, remítase al Juez subdelegado del partido de Tinta para que, notificando primero al Recaudado Don Andrés Chuquitapa como pide dicho Señor y separándolo en caso necesario que altas leguas en contrario fuera del pueblo, proceda con la cautela y prudencia que exige el asunto para su naturaleza a recibir la sumaria información correspondiente bajo las formalidades de escrito respecto de los testigos y Dios, sobre el bullicio, asonada o parcialidad que expresa en su escrito el querellante, haciendo al mismo tiempo que los cuyos otros se acompañan en las fojas antecedentes de ratifiquen y declaren falso su juramento. Y evacuado todo y cuidando de que a dicho querellante no se le incomode ni trate mal en otro de sus recursos, lo remita con su informe. Sin perjuicio de lo cual por lo que toca a la denuncia de tributarios y solicitud del denunciante, oyendo sobre ellos al Apoderado Fiscal, informe por separado con la debida purificación lo que resulte y tenga por convenientes, quedando tomada razón de una providencia en todas sus principales [...] afecta que convengan.
+Firma Castilla
+Firma Don Antonio Chacón (G...)
+
+En el Cuzco en veinte y siete días del mes de Agosto de mil ocho-
+
+#
+
+cientos seis años. Yo el escribano hice presente el auto que antecede al Señor Don Luis Gonzalo del Río del Concejo de su Majestad, su único Fiscal en esta Real Audiencia, estando en las casas de sus moradas, doy fe.
+Firma Chacón
+
+En dicho día mes y año Yo el escribano hice igual diligencia con Manuel Huancachoque en su persona, doy fe.
+Firma Chacón
+
+En folio 10 remito a vuestra Merced un expediente relativo a 51 indios tributarios que ha denunciado Manuel Huancachoque, indio del Pueblo de Tinta, tener ocultos y fuera de matrícula Don Andrés Choquetapa, Recaudador de Reales Tributos de dicho Pueblo, a fin de que evacue vuestra Merced cuanto en mi Auto de este día y con arreglo a lo pedido por el Señor Fiscal se ordena, y verificadas las diligencias correspondientes me dé vuestra Merced cuenta de ellas.
+Dios que a Vuestra Merced muchos años
+Cusco y Agosto 28 de 1806
+(CAV) Ruiz de Castilla
+Al subdelegado de Tinta
+
+#
+
+Sicuani Setiembre 17 de 1806
+
+Por recibida la precedente Orden del muy ilustre señor presidente con el Expediente en folio 10 que la acompaña. Y respecto de que la denuncia que se halla al fin de él en folio 2 hecha por el indio Manuel Huancachoque en 27 de Agosto próximo pasado correspondiente de cincuenta y un Indios que dice tener ocultos y fuera de Matrícula en el pueblo de Tinta su recaudador de tributos Dn Andrés Chuquitapa, es la misma que hizo en once de Febrero del año pasado de 1805, el mismo denunciante, y que se me remitió a mí el subdelegado y al apoderado Fiscal de la presente Revis
+------------------------
+output:
+("entity"{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}person{tuple_delimiter}Manuel Huancachoque es un indígena del pueblo de Tinta que denunció la ocultación de 51 indios fuera de matrícula por parte del recaudador de tributos, Don Andrés Chuquitapa.{record_delimiter}
+("entity"{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}person{tuple_delimiter}Don Andrés Chuquitapa es el recaudador de tributos del pueblo de Tinta, acusado de ocultar indios fuera de matrícula.{record_delimiter}
+("entity"{tuple_delimiter}PEDRO DE LA MATA{tuple_delimiter}person{tuple_delimiter}Pedro de la Mata es una autoridad que ordenó la investigación sobre las denuncias de Manuel Huancachoque.{record_delimiter}
+("entity"{tuple_delimiter}MARIANO FIGUEROA{tuple_delimiter}person{tuple_delimiter}Mariano Figueroa es una persona que participó en la notificación a Don Andrés Chuquitapa sobre las diligencias a realizar.{record_delimiter}
+("entity"{tuple_delimiter}ISIDRO CANO{tuple_delimiter}person{tuple_delimiter}Isidro Cano es un vecino español del pueblo de Tinta que fue llamado a declarar en el proceso.{record_delimiter}
+("entity"{tuple_delimiter}CUZCO{tuple_delimiter}location{tuple_delimiter}Cuzco es la ciudad donde se llevaron a cabo varias de las diligencias y donde se emitieron órdenes relacionadas con el caso.{record_delimiter}
+("entity"{tuple_delimiter}TINTA{tuple_delimiter}location{tuple_delimiter}Tinta es el pueblo donde se originaron las denuncias de ocultación de indios y donde se realizaron las investigaciones.{record_delimiter}
+("entity"{tuple_delimiter}URUBAMBA{tuple_delimiter}location{tuple_delimiter}Urubamba es la provincia donde Matías Ugarte, notario público, certifica ciertos documentos.{record_delimiter}
+("entity"{tuple_delimiter}GONZALO DEL RÍO{tuple_delimiter}person{tuple_delimiter}Gonzalo del Río es una autoridad que participó en la revisión y emisión de órdenes relacionadas con el caso de Manuel Huancachoque.{record_delimiter}
+("entity"{tuple_delimiter}AGUSTÍN CHACÓN Y BECERRA{tuple_delimiter}person{tuple_delimiter}Agustín Chacón y Becerra es mencionado en el contexto de las diligencias legales en Cuzco.{record_delimiter}
+("entity"{tuple_delimiter}MATÍAS UGARTE{tuple_delimiter}person{tuple_delimiter}Matías Ugarte es un notario público de la provincia de Urubamba que certifica documentos legales.{record_delimiter}
+("relationship"{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}Manuel Huancachoque denunció a Andrés Chuquitapa por ocultar indios fuera de matrícula en Tinta.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}PEDRO DE LA MATA{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}Pedro de la Mata ordenó la investigación sobre las denuncias presentadas por Manuel Huancachoque.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}MARIANO FIGUEROA{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}Mariano Figueroa notificó a Andrés Chuquitapa sobre las diligencias a realizar en el caso.{tuple_delimiter}6){record_delimiter}
+("relationship"{tuple_delimiter}CUZCO{tuple_delimiter}TINTA{tuple_delimiter}Cuzco es la ciudad donde se emitieron órdenes para investigar las denuncias ocurridas en Tinta.{tuple_delimiter}5){record_delimiter}
+("relationship"{tuple_delimiter}GONZALO DEL RÍO{tuple_delimiter}CUZCO{tuple_delimiter}Gonzalo del Río participó en la revisión de órdenes emitidas en Cuzco relacionadas con el caso.{tuple_delimiter}5){record_delimiter}
+("relationship"{tuple_delimiter}MATÍAS UGARTE{tuple_delimiter}URUBAMBA{tuple_delimiter}Matías Ugarte es un notario público que certifica documentos en la provincia de Urubamba.{tuple_delimiter}4){completion_delimiter}
+#############################
+
+
+Example 2:
+
+entity_types: [person, location, legal_document, position, event, community, indigenous_group, administrative_unit, legal_procedure]
+text:
+ de él en folio 2 hecha por el indio Manuel Huancachoque en 27 de Agosto próximo pasado correspondiente de cincuenta y un Indios que dice tener ocultos y fuera de Matrícula en el pueblo de Tinta su recaudador de tributos Dn Andrés Chuquitapa, es la misma que hizo en once de Febrero del año pasado de 1805, el mismo denunciante, y que se me remitió a mí el subdelegado y al apoderado Fiscal de la presente Revisita por el mismo Sr. Presidente con fecha 29 de mayo de este presente año para que hiciéramos el examen y Justificación de la defraudación que se hacía a su Majestad cometida por el citado recaudador: Desglósese de este Expediente y agréguese a el de la primera denuncia, en él igualmente sea el Informe que se nos manda hacer sobre el asunto se devolverá a manos del M. Y. S. P. como lo tiene Ordenado en la citada fecha de remisión. Y por lo que hace a las demás diligencias que se deben practicar en el Pueblo de Tinta con la cautela y prudencia que exige el asunto que ha representado
+
+#
+
+Manuel Huancachoque en aquel Superior Gobierno con arreglo a lo pedido por el Ministerio Fiscal: Procédase por mí a tomar la información Correspondiente sobre los hechos que ha expuesto el citado Huancachoque, y con lo que resulte hágase el correspondiente informe, y dése la Cuenta Ordenada por Decreto de 27 de Agosto al presente año.
+Pedro de la Mata
+
+Nota
+Se agregó las dos fojas de denuncia y pedimiento que se expresa en esta providencia al expediente de la primera denuncia que hizo Manuel Huancachoque Tinta 23 de Septiembre de 1806
+
+Para dar principio a la Información mandada recibir por el M. I. S. P. sobre los hechos que ha representado Manuel Huancachoque, y en cumplimiento del Auto que antecede, notifíquese al recaudador de tributos D. Andrés Chuquitapa que ni sí ni por medio de otro alguno incomode ni infiera perjuicio a Huancachoque en odio de su denuncia bajo ese
+
+#
+
+apercibimiento. Y aunque no tengo recelo de que sea necesario separarlo de este Pueblo ínterin se reúne la expresada información respecto a que todos los Indios que manifiesta la denuncia última están matriculados en la nueva revisita, hágase Saber a Chuquitapa se retire de este Pueblo a distancia de cuatro leguas (ínterin de [...] las diligencias que se van a practicar) por Don Mariano Figueroa. Así lo proveí y mandé y firmé con testigos a falta de Escribano.
+Pedro de la Mata
+Mariano Figueroa
+
+Inmediatamente le hice saber a D. Andrés Chuquitapa la precedencia que en la persona que lo oyó y entendió el contenido de ella y lo firmó conmigo, lo que pongo por dirigido.
+Mariano Figueroa
+
+En el pueblo de Tinta, Veinte y tres días del mes de Septiembre de mil ochocientos y seis años, que la información mandada reunir compareció ante mí D. Pedro de la Mata [...] de este partido la persona de D. Isidro
+
+#
+
+Cano, vecino Español de este antedicho pueblo, a quien le recibí juramento que lo hizo a Dios nuestro Señor y [...] señal de esta segura forma de dicho, bajo del que prometió decir verdad de lo que supiere y fuere preguntado. Y siéndole manifestado la certificación de esta forma prima de este Expediente, dijo que la firma que dice Isidro Cano es suya propia y la que acostumbra hacer y aprendido que se le ofrece. Y leído su contenido
+------------------------
+output:
+("entity"{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}person{tuple_delimiter}Manuel Huancachoque es un indígena del pueblo de Tinta que denunció la ocultación de 51 indios fuera de matrícula por parte del recaudador de tributos, Don Andrés Chuquitapa.{record_delimiter}
+("entity"{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}person{tuple_delimiter}Don Andrés Chuquitapa es el recaudador de tributos del pueblo de Tinta, acusado de ocultar indios fuera de matrícula.{record_delimiter}
+("entity"{tuple_delimiter}PEDRO DE LA MATA{tuple_delimiter}person{tuple_delimiter}Pedro de la Mata es una autoridad que ordenó la investigación sobre las denuncias de Manuel Huancachoque.{record_delimiter}
+("entity"{tuple_delimiter}MARIANO FIGUEROA{tuple_delimiter}person{tuple_delimiter}Mariano Figueroa es una persona que participó en la notificación a Don Andrés Chuquitapa sobre las diligencias a realizar.{record_delimiter}
+("entity"{tuple_delimiter}ISIDRO CANO{tuple_delimiter}person{tuple_delimiter}Isidro Cano es un vecino español del pueblo de Tinta que fue llamado a declarar en el proceso.{record_delimiter}
+("entity"{tuple_delimiter}CUZCO{tuple_delimiter}location{tuple_delimiter}Cuzco es la ciudad donde se llevaron a cabo varias de las diligencias y donde se emitieron órdenes relacionadas con el caso.{record_delimiter}
+("entity"{tuple_delimiter}TINTA{tuple_delimiter}location{tuple_delimiter}Tinta es el pueblo donde se originaron las denuncias de ocultación de indios y donde se realizaron las investigaciones.{record_delimiter}
+("entity"{tuple_delimiter}URUBAMBA{tuple_delimiter}location{tuple_delimiter}Urubamba es la provincia donde Matías Ugarte, notario público, certifica ciertos documentos.{record_delimiter}
+("entity"{tuple_delimiter}GONZALO DEL RÍO{tuple_delimiter}person{tuple_delimiter}Gonzalo del Río es una autoridad que participó en la revisión y emisión de órdenes relacionadas con el caso de Manuel Huancachoque.{record_delimiter}
+("entity"{tuple_delimiter}AGUSTÍN CHACÓN Y BECERRA{tuple_delimiter}person{tuple_delimiter}Agustín Chacón y Becerra es mencionado en el contexto de las diligencias legales en Cuzco.{record_delimiter}
+("entity"{tuple_delimiter}MATÍAS UGARTE{tuple_delimiter}person{tuple_delimiter}Matías Ugarte es un notario público de la provincia de Urubamba que certifica documentos legales.{record_delimiter}
+("relationship"{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}Manuel Huancachoque denunció a Andrés Chuquitapa por ocultar indios fuera de matrícula en Tinta.{tuple_delimiter}8){record_delimiter}
+("relationship"{tuple_delimiter}PEDRO DE LA MATA{tuple_delimiter}MANUEL HUANCACHOQUE{tuple_delimiter}Pedro de la Mata ordenó la investigación sobre las denuncias presentadas por Manuel Huancachoque.{tuple_delimiter}7){record_delimiter}
+("relationship"{tuple_delimiter}MARIANO FIGUEROA{tuple_delimiter}ANDRÉS CHUQUITAPA{tuple_delimiter}Mariano Figueroa notificó a Andrés Chuquitapa sobre las diligencias a realizar en el caso.{tuple_delimiter}6){record_delimiter}
+("relationship"{tuple_delimiter}CUZCO{tuple_delimiter}TINTA{tuple_delimiter}Cuzco es la ciudad donde se emitieron órdenes para investigar las denuncias ocurridas en Tinta.{tuple_delimiter}5){record_delimiter}
+("relationship"{tuple_delimiter}GONZALO DEL RÍO{tuple_delimiter}CUZCO{tuple_delimiter}Gonzalo del Río participó en la revisión de órdenes emitidas en Cuzco relacionadas con el caso.{tuple_delimiter}5){record_delimiter}
+("relationship"{tuple_delimiter}MATÍAS UGARTE{tuple_delimiter}URUBAMBA{tuple_delimiter}Matías Ugarte es un notario público que certifica documentos en la provincia de Urubamba.{tuple_delimiter}4){completion_delimiter}
+#############################
+
+
+
+-Real Data-
+######################
+entity_types: [person, location, legal_document, position, event, community, indigenous_group, administrative_unit, legal_procedure]
+text: {input_text}
+######################
+output:
